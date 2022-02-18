@@ -7,8 +7,6 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import ru.netology.domain.Student;
 
-import java.util.List;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -16,8 +14,8 @@ import static org.hamcrest.Matchers.equalTo;
 public class PostmanEchoTest {
 
     private Student one = new Student(1, "Andrey Gribanov", "QA", 34);
-    private Student two = new Student(2, "Petr Petrov", "SQL", 30);
-    private Student three = new Student(3, "Ivan Ivanov", "Python", 17);
+    private Student two = new Student(2, "Petr Petrov", "SQL", 17);
+    private Student three = new Student(3, "Ivan Ivanov", "Python", 24);
     private Student[] mass = {one, two, three};
 
     private Gson gson = new Gson();
@@ -31,12 +29,9 @@ public class PostmanEchoTest {
 
     @Test
     void shouldCheckCodeResponse() {
-        // Given - When - Then
-        // Предусловия
         given()
                 .spec(requestSpec)
                 .body(students)
-
                 .when()
                 .post("/post")
                 // Проверки
@@ -47,12 +42,9 @@ public class PostmanEchoTest {
 
     @Test
     void shouldCheckSizeResponse() {
-        // Given - When - Then
-        // Предусловия
         given()
                 .spec(requestSpec)
                 .body(students)
-
                 .when()
                 .post("/post")
                 // Проверки
@@ -63,12 +55,9 @@ public class PostmanEchoTest {
 
     @Test
     void shouldCheckValueResponse() {
-        // Given - When - Then
-        // Предусловия
         given()
                 .spec(requestSpec)
                 .body(students)
-
                 .when()
                 .post("/post")
                 // Проверки
@@ -79,12 +68,9 @@ public class PostmanEchoTest {
 
     @Test
     void shouldCheckThatAgeMore18() {
-        // Given - When - Then
-        // Предусловия
         given()
                 .spec(requestSpec)
                 .body(students)
-
                 .when()
                 .post("/post")
                 // Проверки
@@ -94,18 +80,32 @@ public class PostmanEchoTest {
     }
 
     @Test
-    void shouldCheckThatAgeMore181111() {
-        // Given - When - Then
-        // Предусловия
+    void shouldFindStudentWhoseAgeMore18() {
         given()
                 .spec(requestSpec)
                 .body(students)
-
                 .when()
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data.every{it.age > 18}.name", equalTo("Andrey Gribanov"))
+                .body("data.findAll{it.age > 18}.name", hasSize(2))
+                .body("data.findAll{it.age > 18}.name[0]", equalTo("Andrey Gribanov"))
+                .body("data.findAll{it.age > 18}.name[1]", equalTo("Ivan Ivanov"))
+        ;
+    }
+
+    @Test
+    void shouldFindStudentNotEqual() {
+        given()
+                .spec(requestSpec)
+                .body(students)
+                .when()
+                .post("/post")
+                // Проверки
+                .then()
+                .body("data.findAll{it.category != 'QA'}.name", hasSize(2))
+                .body("data.findAll{it.category != 'QA'}.name[0]", equalTo("Petr Petrov"))
+                .body("data.findAll{it.category != 'QA'}.name[1]", equalTo("Ivan Ivanov"))
         ;
     }
 }
