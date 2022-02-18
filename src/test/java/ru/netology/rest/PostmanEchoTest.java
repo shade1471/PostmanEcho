@@ -36,7 +36,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .statusCode(404)
+                .statusCode(200)
         ;
     }
 
@@ -49,7 +49,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data", hasSize(1))
+                .body("data", hasSize(3))
         ;
     }
 
@@ -62,7 +62,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data[0].name", equalTo("Gribanov"))
+                .body("data[0].name", equalTo("Andrey Gribanov"))
         ;
     }
 
@@ -75,7 +75,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data.every{it.age > 18}", is(true))
+                .body("data.every{it.age > 18}", is(false))
         ;
     }
 
@@ -88,7 +88,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data.findAll{it.age > 18}.name", hasSize(1))
+                .body("data.findAll{it.age > 18}.name", hasSize(2))
                 .body("data.findAll{it.age > 18}.name[0]", equalTo("Andrey Gribanov"))
                 .body("data.findAll{it.age > 18}.name[1]", equalTo("Ivan Ivanov"))
         ;
@@ -103,7 +103,7 @@ public class PostmanEchoTest {
                 .post("/post")
                 // Проверки
                 .then()
-                .body("data.findAll{it.category != 'QA'}.name", hasSize(1))
+                .body("data.findAll{it.category != 'QA'}.name", hasSize(2))
                 .body("data.findAll{it.category != 'QA'}.name[0]", equalTo("Petr Petrov"))
                 .body("data.findAll{it.category != 'QA'}.name[1]", equalTo("Ivan Ivanov"))
         ;
